@@ -1,0 +1,292 @@
+package multi;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.Socket;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.*;
+import client.*;
+import common.*;
+
+public class ClientNetwork extends Thread {
+	
+    private Socket soc; // stream socket
+    private ObjectOutputStream oos = null;
+    private ObjectInputStream ois = null;
+ 
+    private DatagramSocket ds; // sub socket
+    private ClientUI ui;
+    private Account user;
+    private String nick; // user nickname
+ 
+    public ClientNetwork(ClientUI c) {
+        this.ui = c;
+        
+        System.out.println("연결중");
+        
+        try {
+            soc = new Socket(c.ip, 56789);
+            System.out.println("??");
+            oos = new ObjectOutputStream(soc.getOutputStream());
+            ois = new ObjectInputStream(soc.getInputStream());
+            System.out.println("[client] connected to server");
+            ds = new DatagramSocket(soc.getLocalPort()); // // TCP와 UDP는 같은 포트로 사용할 수 있음.
+ 
+        } catch (IOException e) {
+            System.out.println("[client] network error " + e.toString());
+        }
+        
+        start();
+    }
+ 
+    @Override
+    public void run() {
+        while (!ds.isClosed()) {
+            DatagramPacket dp = new DatagramPacket(new byte[2048], 2048);
+            
+            try {
+                ds.receive(dp);
+                System.out.println("client UDP received");
+                String data = new String(dp.getData(), 0, dp.getLength());
+                System.out.println(data);
+                String[] str = data.split("#");
+                
+                switch (str[0]) {
+                    //  server udp event ...
+                case "userListChange":
+                	sendUserListRequest();
+                	break;
+                	
+                case "changerooms": // room list update
+                    sendStateRoomRequest();
+                    break;
+                }
+                
+            } catch (IOException e) {
+                System.out.println("dp failed .. " + e.toString());
+                ds.close();
+                break;
+            }
+ 
+        }
+    }
+    
+    // request client -> server data...
+    public void sendCreateRequest(String nick, String pass, String name, String repass) {
+        String resp = null;
+        System.out.println(" [Client] request : ");
+        
+        if (nick.trim().equals("") || pass.trim().equals("")) {
+            JOptionPane.showMessageDialog(ui, "UserName and Password");
+            return;
+        }
+        
+        if (!pass.equals(repass)) {
+            JOptionPane.showMessageDialog(ui, "Check password");
+            return;
+        }
+        
+        synchronized (oos) {
+            try {
+                oos.writeObject("create#" + nick + "#" + pass + "#" + name);
+ 
+                resp = (String) ois.readObject();
+                System.out.println("[Client] response : " + resp);
+                String[] data = resp.split("#");
+ 
+                // ui control
+                if (data[0].equals("true")) {
+                    ui.pnSignup.tfId.setText(nick);
+                    ui.pnSignup.tfpw.setText("");
+                    ui.pnSignup.tfname.setText("");
+                    ui.pnSignup.tfrpw.setText("");
+                    JOptionPane.showMessageDialog(ui, "Success...");
+                    // 로그인 페이지로 이동.
+                    ui.setSize(496, 748);
+                    ui.setTitle("RhythmGame - Login");
+                    ui.setContentPane(ui.pnLogin);
+                    ui.pnLogin.tfid.setText(nick);
+                } else {
+                    JOptionPane.showMessageDialog(ui, data[1]);
+                }
+ 
+            } catch (ClassNotFoundException | IOException e) {
+                System.out.println("[Client] network error " + e.toString());
+            }
+            
+        }
+    }
+    
+    
+    public void sendLoginRequest(String nick, String pass) { // login request
+    	this.nick = nick;
+        String resp = null;
+        System.out.println("[Client] request : ");
+ 
+        // "" check
+        if (nick.trim().equals("") || pass.trim().equals("")) {
+            JOptionPane.showMessageDialog(ui, "ID and Password");
+            return;
+        }
+ 
+        synchronized (oos) {
+            try {
+                // request to server
+                oos.writeObject("join#" + nick + "#" + pass);
+ 
+                // read value
+                resp = (String) ois.readObject();
+                System.out.println("[client] response : " + resp);
+ 
+                // ui control
+                String[] data = resp.split("#");
+                if (data[0].equals("true")) {
+                    System.out.println("come");
+                    ui.pnLogin.tfid.setText("");
+                    ui.pnLogin.tfpw.setText("");
+                    ui.setSize(800, 800);
+                    ui.setTitle("RhythmGame - Wating Room");
+                    ui.setLocationRelativeTo(null);
+                    ui.setContentPane(ui.pnRoom);
+                    ui.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                    sendStateRoomRequest();
+                    
+                } else {
+                    ui.pnLogin.tfid.setText("");
+                    ui.pnLogin.tfpw.setText("");
+                    JOptionPane.showMessageDialog(ui, data[1]);
+                }
+ 
+            } catch (ClassNotFoundException | IOException e) {
+                System.out.println("[client] network error " + e.toString());
+            }
+        }
+        
+    }
+    
+    public void sendUserListRequest() {
+    	Set<Account> resp = null;
+    	
+        synchronized (oos) {
+            try {
+                oos.writeObject("get");
+                resp = (Set<Account>) ois.readObject();
+                
+                // 방목록을 List에 뿌려주기 위한 작업
+                String[] ar = new String[resp.size()];
+                int i = 0;
+                
+                for (Account a : resp) {
+                    ar[i++] = a.toString();
+                }
+                ui.pnRoom.userList.setListData(ar);
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
+        }
+        
+    }
+    
+    // create room
+    public void sendCreateRoomRequest(String title, String pw, boolean twouser) {
+        Room resp = null;
+        synchronized (oos) {
+            try {
+                oos.writeObject("createroom#" + title + "#" + twouser + "#" + pw);
+                resp = (Room) ois.readObject();;
+                System.out.println(resp);
+ 
+                if (resp == null) {
+                    JOptionPane.showMessageDialog(ui, "already create");
+                } else if(!twouser){
+                    // 1인용 방 만들기 성공했을 때 게임 대기방에서 띄울 정보 셋팅
+                } else {
+                    // 2인용 방 만들기 성공했을 때 게임 대기방에서 띄울 정보 셋팅
+                }
+            } catch (ClassNotFoundException | IOException e) {
+                System.out.println(e.toString());
+            }
+        }
+    }
+    
+    // show room list
+    public void sendStateRoomRequest() {
+        List<Room> resp = null;
+        
+        synchronized (oos) {
+            try {
+                oos.writeObject("roomlist");
+                resp = (List<Room>) ois.readObject();
+                int i = 0;
+                System.out.println(resp);
+                if (!resp.isEmpty()) {
+                    do {
+                        System.out.println("룸 !null");
+                        ui.pnRoom.btList.get(i).setText("");
+                        ui.pnRoom.btList.get(i).setEnabled(true);
+                        ui.pnRoom.btList.get(i).setText("<html>제목 : " +resp.get(i).getTitle() + "<br/>" + "방장 : " + resp.get(i).getJoiner().get(0).getNick() + "<br/>" + "인원 : " + resp.get(i).getJoiner().size() + " / 2" + "<br/>" + "암호방 : " + (resp.get(i).getPass().equals("") ? "NO" : "YES") + "<br/>" + "방 상태 : " + (resp.get(i).isGameStart() ? "게임 중.." : "대기 중..")+  "</html>");               
+                        
+                        if(resp.get(i).getJoiner().size() == 2) {
+                            ui.pnRoom.btList.get(i).setEnabled(false);
+                        }
+                        
+                        if(!resp.get(i).isTwoUserRoom()) {
+                            ui.pnRoom.btList.get(i).setText("<html>제목 : " +resp.get(i).getTitle() + "<br/>" + "방장 : " + resp.get(i).getJoiner().get(0).getNick() + "<br/>" + "인원 : " + resp.get(i).getJoiner().size() + " / 1" + "<br/>" + "암호방 : " + (resp.get(i).getPass().equals("") ? "NO" : "YES") + "<br/>" + "방 상태 : " + (resp.get(i).isGameStart() ? "게임 중.." : "대기 중..")+  "</html>");               
+                            ui.pnRoom.btList.get(i).setEnabled(false);
+                        }
+                        
+                        i++;
+                    } while (i < resp.size());
+                }
+                
+                while (i < 8) {
+                    System.out.println("룸 null");
+                    ui.pnRoom.btList.get(i).setEnabled(false);
+                    ui.pnRoom.btList.get(i).setText("");
+                    i++;
+                }
+ 
+            } catch (ClassNotFoundException | IOException e) {
+            	
+            }
+        }
+    }
+
+    // enter room
+    public void sendEnterRoomRequest(int idx) {        
+        synchronized (oos) {
+            try {
+                oos.writeObject("enterroom#" + idx);
+                Room resp = (Room) ois.readObject();
+                
+                if (!(resp == null)) {        
+                   // not password room
+ 
+                } else { // password room
+                    String pw = JOptionPane.showInputDialog("비밀번호를 입력하세요.");
+                    
+                    if (!(pw.equals(""))) {
+                        oos.writeObject("secretroom#" + pw);
+                        resp = (Room) ois.readObject();
+                        
+                        if(resp != null) {    
+                            // success
+                                 
+                        }else {
+                            JOptionPane.showMessageDialog(ui, "비밀번호가 틀렸습니다.");
+                        }
+                    }
+                }
+            }catch (ClassNotFoundException | IOException e) {
+                    System.out.println(e.toString());
+            }
+        }
+    }    
+    
+    
+}

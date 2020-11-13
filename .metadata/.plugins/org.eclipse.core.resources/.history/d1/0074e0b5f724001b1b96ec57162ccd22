@@ -1,0 +1,10 @@
+package handler;
+
+import java.awt.*;
+import javax.swing.*;
+import client.*;
+
+public class BtSignUpHandler implements ActionListener {
+
+	ClientUI ui;
+}

@@ -1,0 +1,7 @@
+package chat;
+
+import java.util.Vector;
+
+public class Room {
+
+}

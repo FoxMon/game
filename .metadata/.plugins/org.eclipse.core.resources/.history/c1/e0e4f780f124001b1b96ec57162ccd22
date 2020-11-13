@@ -1,0 +1,11 @@
+package common;
+
+public class Message implements Serializable {
+	
+	private boolean send;
+	private boolean read;
+	
+    private String name;
+    private String ment;
+    private String date;
+}

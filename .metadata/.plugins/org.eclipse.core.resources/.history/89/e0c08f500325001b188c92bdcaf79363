@@ -1,0 +1,111 @@
+package common;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Vector;
+
+import Common.Account;
+
+public class Room implements Serializable {
+	private int selectMusic = 0;		// 諛⑹뿉�꽌 �꽑�깮�맂 怨�
+	private String title;			// 諛� �젣紐�
+	private String pass;				// 諛� 鍮꾨�踰덊샇
+	private List<Account> joiner;	// 諛⑹뿉 �엯�옣�븳 �쑀��紐⑸줉
+	private boolean gameStart;		// 寃뚯엫以묒씤吏� �븘�땶吏�
+	private boolean resultSetting;	// 諛⑹뿉 議댁옱�븯�뒗 �궗�엺�씠 紐⑤몢 寃뚯엫�씠 �걹�궗�뒗吏� �솗�씤
+	private boolean twoUserRoom;	// 1�씤�슜�씤吏� 2�씤�슜�씤吏� 泥댄겕
+	
+	//======== �깮�꽦�옄 ================================
+	public Room(Account owner, String title, boolean twouser, String pass) {			// 鍮꾨�踰덊샇 諛� �깮�꽦�옄
+		joiner = new Vector<>();
+		joiner.add(owner);
+		this.title = title;
+		this.pass = pass;
+		gameStart = false;
+		resultSetting = false;
+		twoUserRoom = twouser;
+	}
+	
+	public Room(Account owner, String title, boolean twouser) {		// 鍮꾨�踰덊샇媛� �븘�땶 諛� �깮�꽦�옄
+		this(owner, title, twouser, "");
+		gameStart = false;
+	}
+	//===============================================
+	
+	public void enterAccount(Account acc) {			// 諛⑹뿉 �엯�옣
+		joiner.add(acc);
+	}
+	
+	public boolean leave(Account acc) {				// 諛⑹뿉�꽌 �굹媛� �븣
+		return joiner.remove(acc);
+	}
+	
+	public boolean isEmpty() {						// 鍮� 諛⑹씤吏� 泥댄겕
+		return joiner.size()==0;
+	}
+	
+	@Override
+	public String toString() {						// 諛⑹쓽 �긽�깭
+		Account creater = joiner.get(0);
+		return  title +" ��" + creater.getNick() +" - "+ joiner.size() +"/2��";
+	}
+
+	// Getter and Setter =====================================
+	public int getSelectMusic() {
+		return selectMusic;
+	}
+
+	public void setSelectMusic(int selectMusic) {
+		this.selectMusic = selectMusic;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getPass() {
+		return pass;
+	}
+
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
+
+	public List<Account> getJoiner() {
+		return joiner;
+	}
+
+	public void setJoiner(List<Account> joiner) {
+		this.joiner = joiner;
+	}
+
+	public boolean isGameStart() {
+		return gameStart;
+	}
+
+	public void setGameStart(boolean gameStart) {
+		this.gameStart = gameStart;
+	}
+	
+	public boolean isResultSetting() {
+		return resultSetting;
+	}
+
+	public void setResultSetting(boolean resultSetting) {
+		this.resultSetting = resultSetting;
+	}
+	
+	public boolean isTwoUserRoom() {
+		return twoUserRoom;
+	}
+
+	public void setTwoUserRoom(boolean twoUserRoom) {
+		this.twoUserRoom = twoUserRoom;
+	}
+	// ===================================================
+	
+}

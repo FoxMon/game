@@ -4,6 +4,15 @@
 JunHo - Rhythm Game - Network - Login / Create Account.
 ( Ver02 )
 
+-----------------------------------------------------------------------
 
-JunHo - Rhythm Game - Network - CreateRoom / EnterRoom
+JunHo - Rhythm Game - Network - CreateRoom / EnterRoom Logic
 (Ver03)
+
+-----------------------------------------------------------------------
+
+JunHo - Rhythm Game - Network - CreateRoom / EnterRoom Implements
+         - Socket / Room Create, Enter, Exit, Waiting room, UserInfo etc....
+(Ver04)
+
+-----------------------------------------------------------------------

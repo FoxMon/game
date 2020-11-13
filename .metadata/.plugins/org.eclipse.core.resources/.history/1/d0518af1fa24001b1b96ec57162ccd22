@@ -1,0 +1,160 @@
+package multi;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.Socket;
+import javax.swing.*;
+import client.*;
+import common.*;
+
+public class ClientNetwork extends Thread {
+	
+    private Socket soc; // stream socket
+    private ObjectOutputStream oos = null;
+    private ObjectInputStream ois = null;
+ 
+    private DatagramSocket ds; // sub socket
+    private ClientUI ui;
+    private Account user;
+    private String nick; // user nickname
+ 
+    public ClientNetwork(ClientUI c) {
+        this.ui = c;
+        
+        System.out.println("연결중");
+        
+        try {
+            soc = new Socket(c.ip, 56789);
+            System.out.println("??");
+            oos = new ObjectOutputStream(soc.getOutputStream());
+            ois = new ObjectInputStream(soc.getInputStream());
+            System.out.println("[client] connected to server");
+            ds = new DatagramSocket(soc.getLocalPort()); // // TCP와 UDP는 같은 포트로 사용할 수 있음.
+ 
+        } catch (IOException e) {
+            System.out.println("[client] network error " + e.toString());
+        }
+        
+        start();
+    }
+ 
+    @Override
+    public void run() {
+        while (!ds.isClosed()) {
+            DatagramPacket dp = new DatagramPacket(new byte[2048], 2048);
+            
+            try {
+                ds.receive(dp);
+                System.out.println("client UDP received");
+                String data = new String(dp.getData(), 0, dp.getLength());
+                System.out.println(data);
+                String[] str = data.split("#");
+                
+                switch (str[0]) {
+                    //  server udp event ...
+                }
+                
+            } catch (IOException e) {
+                System.out.println("dp failed .. " + e.toString());
+                ds.close();
+                break;
+            }
+ 
+        }
+    }
+    
+    // request client -> server data...
+    public void sendCreateRequest(String nick, String pass, String name, String repass) {
+        String resp = null;
+        System.out.println(" [Client] request : ");
+        
+        if (nick.trim().equals("") || pass.trim().equals("")) {
+            JOptionPane.showMessageDialog(ui, "UserName and Password");
+            return;
+        }
+        
+        if (!pass.equals(repass)) {
+            JOptionPane.showMessageDialog(ui, "Check password");
+            return;
+        }
+        
+        synchronized (oos) {
+            try {
+                oos.writeObject("create#" + nick + "#" + pass + "#" + name);
+ 
+                resp = (String) ois.readObject();
+                System.out.println("[Client] response : " + resp);
+                String[] data = resp.split("#");
+ 
+                // ui control
+                if (data[0].equals("true")) {
+                    ui.pnSignup.tfId.setText(nick);
+                    ui.pnSignup.tfpw.setText("");
+                    ui.pnSignup.tfname.setText("");
+                    ui.pnSignup.tfrpw.setText("");
+                    JOptionPane.showMessageDialog(ui, "Success...");
+                    // 로그인 페이지로 이동.
+                    ui.setSize(496, 748);
+                    ui.setTitle("RhythmGame - Login");
+                    ui.setContentPane(ui.pnLogin);
+                    ui.pnLogin.tfid.setText(nick);
+                } else {
+                    JOptionPane.showMessageDialog(ui, data[1]);
+                }
+ 
+            } catch (ClassNotFoundException | IOException e) {
+                System.out.println("[Client] network error " + e.toString());
+            }
+            
+        }
+    }
+    
+    
+    public void sendLoginRequest(String nick, String pass) {
+    	this.nick = nick;
+        String resp = null;
+        System.out.println("[Client] request : ");
+ 
+        // "" check
+        if (nick.trim().equals("") || pass.trim().equals("")) {
+            JOptionPane.showMessageDialog(ui, "아이디와 비밀번호를 입력하세요.");
+            return;
+        }
+ 
+        synchronized (oos) {
+            try {
+                // 서버로 요청 =========================================
+                oos.writeObject("join#" + nick + "#" + pass);
+ 
+                // 서버로부터 결과 값 읽어옴
+                resp = (String) ois.readObject();
+                System.out.println("[client] response : " + resp);
+ 
+                // 결과 값에  ui 제어.
+                String[] data = resp.split("#");
+                if (data[0].equals("true")) {
+                    System.out.println("come");
+                    ui.pnLogin.tfid.setText("");
+                    ui.pnLogin.tfpw.setText("");
+                    ui.setSize(800, 800);
+                    ui.setTitle("Drop the beat!! - Wating Room");
+                    ui.setLocationRelativeTo(null);
+                    ui.setContentPane(ui.pnRoom);
+                    ui.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                    sendStateRoomRequest();
+                    sendMessageStateRequest();
+                } else {
+                    ui.pnLogin.tfid.setText("");
+                    ui.pnLogin.tfpw.setText("");
+                    JOptionPane.showMessageDialog(ui, data[1]);
+                }
+ 
+            } catch (ClassNotFoundException | IOException e) {
+                System.out.println("[client] network error " + e.toString());
+            }
+        }
+    }
+}

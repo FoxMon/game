@@ -1,0 +1,18 @@
+package handler;
+
+import java.awt.event.*;
+import client.*;
+
+public class BtLoginHandler implements ActionListener {
+
+	ClientUI ui;
+	
+	public BtLoginHandler(Client c) {
+		ui = c;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+	}
+}

@@ -1,0 +1,8 @@
+package clientPannel;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class RoomPanel extends JPanel {
+
+}

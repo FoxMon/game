@@ -1,0 +1,17 @@
+package common;
+
+import java.util.List;
+
+public class Room {
+
+	private int selectMusic = 0; // select music
+	
+	private String title; // title
+	private String pass; // password
+	
+	private List<Account> joiner; // user list
+	
+	private boolean gameStart; // 게임중인지 아닌지
+	private boolean resultSetting; // 방에 존재하는 사람이 모두 게임이 끝났는지 확인
+	private boolean twoUserRoom; // 1인용인지 2인용인지 체크
+}

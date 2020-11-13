@@ -1,0 +1,8 @@
+package clientPannel;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class LoadingPanel extends JPanel {
+
+}

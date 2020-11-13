@@ -1,0 +1,59 @@
+package chat;
+
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Scanner;
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+public class ClientGUI extends JFrame implements ActionListner {
+	
+    private JTextArea jta = new JTextArea(40, 25);
+    private JTextField jtf = new JTextField(25);
+    
+    private ClientBackground client = new ClientBackground();
+    
+    private static String nickName;
+    
+    public ClientGui() {
+        
+        add(jta, BorderLayout.CENTER);
+        add(jtf, BorderLayout.SOUTH);
+        jtf.addActionListener(this);
+         
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setVisible(true);
+        setBounds(800, 100, 400, 600);
+        setTitle("Client");
+         
+        client.setGui(this);
+        client.setNickname(nickName);
+        client.connet();
+    }
+    
+    public void appendMsg(String msg) {
+        jta.append(msg);
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) { // send Message
+        String msg = nickName+ ":" + jtf.getText()+"\n";
+        client.sendMessage(msg);
+        jtf.setText("");
+    }
+    
+    public static void main(String[] args) {
+    	
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.print("Set Nickname : ");
+        
+        nickName = scanner.nextLine();
+        scanner.close();        
+         
+        new ClientGUI();
+    }
+}

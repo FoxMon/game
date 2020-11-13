@@ -1,0 +1,91 @@
+package client;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import multi.*;
+import clientPannel.*;
+import handler.*;
+
+public class ClientUI extends JFrame {
+
+	public SignUpPanel pnSignup;
+	public LoginPanel pnLogin;
+	public ClientNetwork net = new ClientNetwork(this);
+	
+	public String ip;
+	
+	public ClientUI(String ip) {
+		this.ip = ip;
+		
+		setUIComponent();
+		addListeners();
+	}
+	
+	private void addListeners() {
+		// listner event
+		// go to signup
+        ActionListener bsh = new BtSignUpHandler(this);
+        pnLogin.btsign.addActionListener(bsh);
+ 
+        // signup success
+        ActionListener bsfh = new BtSignUpFinishHandler(this);
+        pnSignup.btCreate.addActionListener(bsfh);
+ 
+        // cancle
+        ActionListener bch = new BtSignUpCancelHandler(this);
+        pnSignup.btCancel.addActionListener(bch);
+        
+        // create
+        ActionListener bcrh = new BtCreateRoomHandler(this);
+        pnRoom.btCreateRoom.addActionListener(bcrh);
+        
+        // 8
+        for(int i=0;i<=7;i++) {
+            ActionListener berh = new BtEnterRoomHandler(this);
+            pnRoom.btList.get(i).addActionListener(berh);
+        }
+	}
+	
+	private void setUIComponent() {
+        setTitle("RhythmGame");
+        
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int rand = (int)(Math.random()*8) *30;
+                
+                setLocation(300 + rand, 200+ rand);
+                setSize(496, 748);
+                
+                WelcomPanel w = new WelcomPanel();
+                setLocationRelativeTo(null);
+                System.out.println(w);
+                setVisible(true);
+                setContentPane(w);
+                System.out.println("w call");
+            }
+        });
+        
+        t.start();
+        
+        try {
+            Thread.sleep(1500);
+        }catch(Exception e) {
+            
+        }
+        
+        setTitle("RhythmGame - Login");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
+        setSize(496, 748);
+        
+        pnSignup = new SignUpPanel();
+        pnLogin = new LoginPanel();
+        setContentPane(pnLogin);
+        
+        ActionListener blgh = new BtLoginHandler(this);
+        pnLogin.btlogin.addActionListener(blgh);
+	}
+	
+}

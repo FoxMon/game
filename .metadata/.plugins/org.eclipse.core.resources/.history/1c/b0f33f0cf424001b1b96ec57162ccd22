@@ -1,0 +1,30 @@
+package clientPannel;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class LoadingPanel extends JPanel {
+
+	private Graphics screenGraphic;
+    private Image panelImage;
+    private Image selectedImage;
+    private Image backgroundImage;
+    
+    public LoadingPanel() {
+        setOpaque(false);
+        setSize(320, 320);
+ 
+        setLayout(null);
+        try {
+            backgroundImage = new ImageIcon(getClass().getResource("imge/gg2.gif")).getImage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+ 
+    @Override
+    protected void paintComponent(Graphics g) {
+        g.drawImage(backgroundImage, 0, 0, this);
+        this.repaint();
+    }
+}

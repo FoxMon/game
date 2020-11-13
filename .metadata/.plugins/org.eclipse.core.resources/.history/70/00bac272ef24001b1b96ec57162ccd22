@@ -1,0 +1,13 @@
+package multi;
+
+import java.util.Map;
+import java.util.Set;
+
+import java.util.File;
+
+public class UserAccountPool {
+
+	private Map<String, Account> accountMap;
+	private Set<Account> currentUser;
+	private File address;
+}

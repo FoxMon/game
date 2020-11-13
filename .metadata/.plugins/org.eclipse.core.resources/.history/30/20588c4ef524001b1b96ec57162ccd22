@@ -1,0 +1,17 @@
+package clientPannel;
+
+import java.awt.*;
+
+public class LoginPanel {
+
+	public JTextField tfid;
+    public JButton btlogin;
+    public JButton btsign;
+    public JPasswordField tfpw;
+    public JLabel logo;
+    private Graphics screenGraphic;
+    private Image panelImage;
+    private Image selectedImage ;
+    private Image backgroundImage = new ImageIcon(getClass().getResource("..images/background.jpg")).getImage();
+ 
+}

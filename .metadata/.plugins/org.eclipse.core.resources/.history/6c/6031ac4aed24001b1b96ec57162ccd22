@@ -1,0 +1,29 @@
+package multi;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class ServerStart {
+	
+	public static void main(String[] args) {
+		
+		try {
+			ServerSocket server = new ServerSocket(56789);
+			
+			System.out.println("Server start...");
+			
+			while( !server.isClosed() ) {
+				Socket socket = server.accept();
+				Thread p = new PersonalServer(socket);
+				
+				System.out.println("Server enterd...");
+			}
+			
+			System.out.println();
+		} catch(IOException e) {
+			System.out.println("[Server] network error " + e.toString());
+		}
+	}
+
+}

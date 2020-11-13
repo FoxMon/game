@@ -1,0 +1,58 @@
+package client;
+
+import java.awt.*;
+import javax.swing.*;
+import multi.*;
+import clientPannel.*;
+
+public class ClientUI extends JFrame {
+
+	public LoginPanel pnLogin;
+	public ClientNetwork net = new ClientNetwork(this);
+	
+	public String ip;
+	
+	public ClientUI(String ip) {
+		this.ip = ip;
+		
+		setUIComponent();
+		addListeners();
+	}
+	
+	private void addListeners() {
+		// listner event
+	}
+	
+	private void setUIComponent() {
+        setTitle("RhythmGame");
+        
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int rand = (int)(Math.random()*8) *30;
+                
+                setLocation(300 + rand, 200+ rand);
+                setSize(496, 748);
+                
+                WelcomPanel w = new WelcomPanel();
+                setLocationRelativeTo(null);
+                System.out.println(w);
+                setVisible(true);
+                setContentPane(w);
+                System.out.println("w »£√‚");
+            }
+        });
+        t.start();
+        try {
+            Thread.sleep(1500);
+        }catch(Exception e) {
+            
+        }
+        setTitle("Drop the beat!! - Login");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
+        setSize(496, 748);
+        pnLogin = new LoginPanel();
+        setContentPane(pnLogin);
+	}
+}

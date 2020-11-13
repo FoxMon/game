@@ -1,0 +1,105 @@
+package common;
+
+import java.util.List;
+import java.util.Vector;
+
+public class Room {
+
+	private int selectMusic = 0; // select music
+	
+	private boolean gameStart; // now game?
+	private boolean resultSetting; // all end?
+	private boolean twoUserRoom; // one or two?
+	
+	private String title; // title
+	private String pass; // password
+	
+	private List<Account> joiner; // user list
+	
+	public Room(Account owner, String title, boolean twouser, String pass) { // password room
+		this.title = title;
+        this.pass = pass;
+        
+		joiner = new Vector<>();
+        joiner.add(owner);
+        gameStart = false;
+        resultSetting = false;
+        twoUserRoom = twouser;
+	}
+	
+	public Room(Account owner, String title, boolean twouser) { // none password
+        this(owner, title, twouser, "");
+        gameStart = false;
+    }
+
+	// room status method...
+	
+	public void enterAccount(Account acc) { // enter room
+		joiner.add(acc);
+	}
+	
+	public boolean leave(Account acc) {				// 방에서 나갈 때
+		return joiner.remove(acc);
+	}
+	
+	public boolean isEmpty() {						// 빈 방인지 체크
+		return joiner.size()==0;
+	}
+	
+	public int getSelectMusic() {
+		return selectMusic;
+	}
+
+	public void setSelectMusic(int selectMusic) {
+		this.selectMusic = selectMusic;
+	}
+
+	public boolean isGameStart() {
+		return gameStart;
+	}
+
+	public void setGameStart(boolean gameStart) {
+		this.gameStart = gameStart;
+	}
+
+	public boolean isResultSetting() {
+		return resultSetting;
+	}
+
+	public void setResultSetting(boolean resultSetting) {
+		this.resultSetting = resultSetting;
+	}
+
+	public boolean isTwoUserRoom() {
+		return twoUserRoom;
+	}
+
+	public void setTwoUserRoom(boolean twoUserRoom) {
+		this.twoUserRoom = twoUserRoom;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getPass() {
+		return pass;
+	}
+
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
+
+	public List<Account> getJoiner() {
+		return joiner;
+	}
+
+	public void setJoiner(List<Account> joiner) {
+		this.joiner = joiner;
+	}
+	
+}

@@ -1,3 +1,23 @@
 1605072155693	Rename type 'GmaeUser'
 1605073928865	Rename type 'PlayGameInfo'
 1605075886624	Delete element
+1605187975403	Rename package 'multi'
+1605188176199	Rename package 'menu'
+1605191152413	Rename package 'clientpannel'
+1605194077802	Rename compilation unit 'BtSignUpFinsishHandler.java'
+1605195702910	Rename type 'CreateRoom'
+1605197660539	Delete elements
+1605197674165	Delete element
+1605197675654	Delete element
+1605197742509	Delete element
+1605198786746	Rename type 'CreateRoomFrame'
+1605199276732	Delete element
+1605267733776	Rename package 'chat'
+1605271567983	Rename field 'bt_create'
+1605271582593	Rename field 'bt_enter'
+1605271597523	Rename field 'bt_exit'
+1605271648784	Rename field 'roomInwon'
+1605271671017	Rename field 'sp_roomInfo'
+1605271680774	Rename field 'sp_roomInwon'
+1605271688955	Rename field 'sp_waitInfo'
+1605272248728	Rename method 'sendMsg'

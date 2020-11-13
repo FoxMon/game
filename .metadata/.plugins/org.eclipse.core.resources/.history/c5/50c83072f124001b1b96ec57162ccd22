@@ -1,0 +1,9 @@
+package common;
+
+public class Message {
+	private boolean send;
+    private String name;
+    private String ment;
+    private boolean read;
+    private String date;
+}

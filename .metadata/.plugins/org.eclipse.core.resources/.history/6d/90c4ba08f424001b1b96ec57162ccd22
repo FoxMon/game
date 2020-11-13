@@ -1,0 +1,12 @@
+package clientPannel;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class LoadingPanel extends JPanel {
+
+	private Graphics screenGraphic;
+    private Image panelImage;
+    private Image selectedImage;
+    private Image backgroundImage;
+}

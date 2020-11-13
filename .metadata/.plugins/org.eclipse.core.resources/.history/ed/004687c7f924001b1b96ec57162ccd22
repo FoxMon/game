@@ -1,0 +1,25 @@
+package handler;
+
+import java.awt.event.*;
+import java.awt.*;
+import javax.swing.*;
+import client.*;
+
+public class BtSignUpFinishHandler implements ActionListener {
+	
+    ClientUI ui;
+    
+    public BtSignUpFinishHandler(ClientUI c) {
+        ui = c;
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String nick = ui.pnSignup.tfId.getText().trim();
+        String name = ui.pnSignup.tfname.getText().trim();
+        String pass = String.valueOf(ui.pnSignup.tfpw.getPassword());
+        String repass = String.valueOf(ui.pnSignup.tfrpw.getPassword());
+        ui.net.sendCreateRequest(nick, pass, name, repass);
+    }
+    
+}

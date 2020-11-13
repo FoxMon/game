@@ -1,0 +1,38 @@
+package chat;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Vector;
+
+public class Server implements Runnable {
+
+	private Vector<Service> allUser; // all user
+	private Vector<Service> waitUser; // waiting user
+	private Vector<Room> roomUser; //  room user
+	
+	
+	public Server() { // constructor
+		allUser = new Vector<>();
+		waitUser = new Vector<>();
+		roomUser = new Vector<>();
+		
+		new Thread(this).start();
+	}
+	
+	@Override
+	public void run() {
+		try {
+			// current IP + port number 1234 -> socket service
+			ServerSocket serverSocket = new ServerSocket(1234);
+			
+			System.out.println("Server start...");
+			
+			while(true) {
+				
+			}
+		} catch(IOException e) {
+			
+		}
+	}
+}

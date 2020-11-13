@@ -1,0 +1,24 @@
+package handler;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import client.*;
+
+public class BtSignUpHandler implements ActionListener {
+
+	ClientUI ui;
+	
+	public BtSignUpHandler(ClientUI c) {
+		ui = c;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+        ui.setTitle("Drop the beat!! - Signup");
+        ui.setLocationRelativeTo(null);
+        ui.setSize(450, 700);
+        ui.setContentPane(ui.pnSignup);
+        // =================================
+	}
+}

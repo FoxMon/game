@@ -1,0 +1,58 @@
+package multi;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.io.File;
+import common.*;
+
+public class UserAccountPool {
+
+	private Map<String, Account> accountMap;
+	private Set<Account> currentUser;
+	private File address;
+	
+	public UserAccountPool() {
+		// loading server file...
+		accountMap = new HashMap<()>;
+		currentUser = new HashSet<>();
+	}
+	
+	// add user information control method
+	public String create(String id, String pass, String name) {
+		if(accountMap.containsKey(id)) {
+            return "false#이미 아이디가 존재합니다.";
+        } else {
+            accountMap.put(id, new Account(id, pass, name));
+            System.out.println(accountMap);
+            return "true";
+        }
+    }
+	}
+
+	// getter and setter
+	public Map<String, Account> getAccountMap() {
+		return accountMap;
+	}
+
+	public void setAccountMap(Map<String, Account> accountMap) {
+		this.accountMap = accountMap;
+	}
+
+	public Set<Account> getCurrentUser() {
+		return currentUser;
+	}
+
+	public void setCurrentUser(Set<Account> currentUser) {
+		this.currentUser = currentUser;
+	}
+
+	public File getAddress() {
+		return address;
+	}
+
+	public void setAddress(File address) {
+		this.address = address;
+	}
+	
+}

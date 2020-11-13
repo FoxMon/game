@@ -1,0 +1,13 @@
+package handler;
+
+public class BtQuickRoomHandler {
+
+	ClientUI ui;
+    public BtQuickRoomHandler(ClientUI c) {
+        ui = c;
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        ui.net.sendQuickRoomRequest();
+    }
+}

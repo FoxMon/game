@@ -1,0 +1,25 @@
+package handler;
+
+import java.awt.*;
+import java.awt.event.*;
+
+import client.*;
+
+public class BtCreateRoomHandler implements ActionListener {
+	
+	ClientUI ui;
+	
+	public BtCreateRoomHandler(ClientUI c) {
+        ui = c;
+    }
+	
+    @Override
+    public void actionPerformed(ActionEvent e) {
+ 
+        CreateRoomFrame r = new CreateRoomFrame(ui);
+        String [] titles = new String[] { "fair play.", "manner game","come.","스피드 한게임"};
+        r.tfTitle.setText(titles[(int)(Math.random()*titles.length)]);
+        r.setVisible(true);
+        r.setLocationRelativeTo(null);
+    }
+}

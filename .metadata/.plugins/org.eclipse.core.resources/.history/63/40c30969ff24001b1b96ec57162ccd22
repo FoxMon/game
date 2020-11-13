@@ -1,0 +1,180 @@
+package multi;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import common.*;
+
+public class PersonalServer extends Thread {
+
+	static UserAccountPool accountPool; // current user
+	static DatagramSocket ds; // for udp socket
+	static List<Room> rooms; // room manage
+	
+	private Account nowUser; // current user account
+	
+	static {
+		accountPool = new UserAccountPool();
+		rooms = new ArrayList<>();
+		
+		try {
+			ds = new DatagramSocket(56789);
+		} catch(IOException e) {
+			System.out.println("Alarm socket failed... " + e.getMessage());
+		}
+	}
+	
+	static void sendAlarmToAll(String alarm) { // send udp
+		DatagramPacket dp = new DatagramPacket(alarm.getBytes(), alarm.getBytes().length);
+		
+		for(Account a : accountPool.getCurrentUser()) {
+			dp.setSocketAddress(a.getSocketAddress());
+			
+            try {
+                System.out.println("server UDP send");
+                
+                ds.send(dp);
+            }catch(IOException e) {
+                System.out.println("[server-Thread] send alarm failed .. " + e.toString());
+            }
+            
+		}
+	}
+	
+	static void sendAlarmToUser(SocketAddress sa, String alaram) { // send udp to one
+		DatagramPacket dp = new DatagramPacket(alaram.getBytes(), alaram.getBytes().length);
+		dp.setSocketAddress(sa);
+		
+		try {
+			System.out.println("Send UDP send...");
+			
+			ds.send(dp);
+		} catch(IOException e) {
+			System.out.println("[Server-Thread] send alarm failed... " + e.getMessage());
+		}
+	}
+	
+	
+	static void sendAlarmToUsers(Room r, String alaram) { // send users
+		DatagramPacket dp = new DatagramPacket(alaram.getBytes(), alaram.getBytes().length);
+	    
+        for(Account a : r.getJoiner()) {
+            SocketAddress sa = a.getSocketAddress();
+            dp.setSocketAddress(sa);
+            
+            try {
+                System.out.println("server UDP send");
+                System.out.println("txt"+alaram);
+                ds.send(dp);
+            }catch(IOException e) {
+                System.out.println("[server-Thread] send alarm failed .. " + e.getMessage());
+            }
+        }
+        
+	}
+	
+    private Socket socket;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
+    private Account user; // current user
+    
+    public PersonalServer(Socket socket) { // constructor
+        this.socket = socket;
+        try {
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
+        }catch(IOException e) {
+        	
+        }
+        
+    }
+   
+    @Override
+    public void run() {
+        String[] command = null;
+        String received = null;
+        
+        while(socket.isConnected()) {
+            
+            try {
+                received = (String)ois.readObject();
+            }catch(IOException | ClassNotFoundException e) { // abnormal finish
+                System.out.println("[Server] closed...");
+            }
+            
+            System.out.println("[Server] received : " + received);
+            
+            command = received.split("#"); // #
+            Object resp = null;
+            
+            System.out.println(command[0]);
+            
+            switch(command[0]) {
+            case "create": // create
+            	resp = accountPool.create(command[1], command[2], command[3]);
+                sendToClient(resp);
+                break;    
+                
+            case "join": // login
+            	String result = accountPool.login(command[1], command[2], socket.getRemoteSocketAddress());
+                user = accountPool.getAccountMap().get(command[1]);
+                sendToClient(result);
+                
+                if(result.equals("true")) {
+                	sendAlarmToAll("userListChange");
+                }
+                break;
+                
+                
+            case "get": // room panel user list
+            	resp = accountPool.getCurrentUser();
+                sendToClient(resp);
+                break;    
+                
+            case "createroom":    // create room
+                if(rooms.size() >=8) {
+                    sendToClient(null);
+                    sendToClient(0);
+                } else {
+                    user.setJoinRoomIndex(rooms.size());
+                    
+                    // command의 길이가 3이라면 비번방이 아니고 1인용이나 2인용
+                    // command의 길이가 4라면 비번방이기 때문에 무조건 2인용
+                    
+                    if(command.length == 3) {
+                        if(command[2].equals("true")) {
+                            rooms.add(new Room(user, command[1], true,""));
+                        } else {
+                            rooms.add(new Room(user, command[1], false,""));
+                        }
+                    } else {
+                        rooms.add(new Room(user,command[1],true,command[3]));
+                    }
+                    resp = rooms.get(rooms.size()-1);
+                    sendToClient(resp);
+                    sendAlarmToAll("changerooms");
+                }
+                break;
+            }
+            
+        }
+        
+    }
+    
+    private void sendToClient(Object resp) { // TCP
+        try {
+            oos.reset();    
+            oos.writeObject(resp);
+            System.out.println(resp);
+        }catch(IOException e) {
+            System.out.println("Server write fail... " + e.getMessage());
+        }
+    }
+    
+}

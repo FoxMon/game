@@ -1,0 +1,10 @@
+package chat;
+
+import java.util.Vector;
+
+public class Room {
+
+	
+	private String title; // room title
+	private int count; // room people
+}

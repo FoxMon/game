@@ -1,0 +1,115 @@
+package clientPannel;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class SignUpPanel extends JPanel {
+
+    public JTextField tfname;
+    public JPasswordField tfpw;
+    public JPasswordField tfrpw;
+    public JTextField tfId;
+    public JTextArea textArea;
+    public JRadioButton rbAgree;
+    public JRadioButton rbdisAgree;
+    public JButton btCreate;
+    public JButton btCancel;
+    private Graphics screenGraphic;
+    private Image panelImage;
+    private Image selectedImage ;
+    private Image backgroundImage = new ImageIcon(getClass().getResource("imge/123.gif")).getImage();
+ 
+    public SignUpPanel() {
+        setSize(450, 700);
+        setLayout(null);
+        
+        // input id
+        JLabel lblNewLabel = new JLabel("\uD68C  \uC6D0  \uAC00  \uC785");
+        lblNewLabel.setForeground(Color.WHITE);
+        lblNewLabel.setFont(new Font("함초롬바탕", Font.BOLD | Font.ITALIC, 30));
+        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        lblNewLabel.setBounds(109, 63, 226, 58);
+        add(lblNewLabel);
+        tfId = new JTextField();
+        tfId.setBounds(219, 163, 116, 24);
+        add(tfId);
+        tfId.setColumns(10);
+        
+        // input user name
+        tfname = new JTextField();
+        tfname.setBounds(219, 197, 116, 24);
+        add(tfname);
+        tfname.setColumns(10);
+        
+        // password
+        tfpw = new JPasswordField();
+        tfpw.setBounds(219, 231, 116, 24);
+        add(tfpw);
+        
+        // sign up success
+        btCreate = new JButton("\uC644\uB8CC");
+        btCreate.setBounds(87, 600, 105, 27);
+        add(btCreate);
+        
+        // sign up close
+        btCancel = new JButton("\uCDE8\uC18C");
+        btCancel.setBounds(249, 600, 105, 27);
+        add(btCancel);
+        
+        // 기타 라벨 ====================================================================
+        JLabel rrag = new JLabel("\uC544\uC774\uB514 : ");
+        rrag.setForeground(Color.WHITE);
+        rrag.setHorizontalAlignment(SwingConstants.RIGHT);
+        rrag.setFont(new Font("함초롬바탕", Font.BOLD | Font.ITALIC, 15));
+        rrag.setBounds(126, 165, 62, 18);
+        add(rrag);
+        
+        JLabel label = new JLabel("\uC774\uB984 : ");
+        label.setForeground(Color.WHITE);
+        label.setHorizontalAlignment(SwingConstants.RIGHT);
+        label.setFont(new Font("함초롬바탕", Font.BOLD | Font.ITALIC, 15));
+        label.setBounds(126, 199, 62, 18);
+        add(label);
+        
+        JLabel label_1 = new JLabel("\uBE44\uBC00\uBC88\uD638 : ");
+        label_1.setForeground(Color.WHITE);
+        label_1.setHorizontalAlignment(SwingConstants.RIGHT);
+        label_1.setFont(new Font("함초롬바탕", Font.BOLD | Font.ITALIC, 15));
+        label_1.setBounds(83, 233, 105, 18);
+        add(label_1);
+        
+        JLabel label_2 = new JLabel("\uBE44\uBC00\uBC88\uD638 \uD655\uC778 : ");
+        label_2.setForeground(Color.WHITE);
+        label_2.setHorizontalAlignment(SwingConstants.RIGHT);
+        label_2.setFont(new Font("함초롬바탕", Font.BOLD | Font.ITALIC, 15));
+        label_2.setBounds(48, 267, 139, 18);
+        add(label_2);
+        
+        JLabel label_3 = new JLabel("[ \uD68C\uC6D0\uC57D\uAD00 ]");
+        label_3.setForeground(Color.WHITE);
+        label_3.setHorizontalAlignment(SwingConstants.CENTER);
+        label_3.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 17));
+        label_3.setBounds(129, 311, 171, 44);
+        add(label_3);
+        
+        JLabel lblNewLabel_1 = new JLabel("\u203B \uC57D\uAD00\uC744 \uC77D\uACE0 \uB3D9\uC758 \uBC84\uD2BC\uC744 \uB20C\uB7EC\uC8FC\uC138\uC694.");
+        lblNewLabel_1.setForeground(Color.RED);
+        lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+        lblNewLabel_1.setBounds(48, 506, 342, 15);
+        add(lblNewLabel_1);
+    }
+    
+    // background paint
+    public void paint(Graphics g) {
+          panelImage = createImage(this.getWidth(), this.getHeight());
+          screenGraphic= panelImage.getGraphics();
+          screenDraw(screenGraphic);
+          g.drawImage(panelImage, 0, 0, null);
+    }
+    public void screenDraw(Graphics g) {
+           g.drawImage(backgroundImage, 0, 0, null);
+           paintComponents(g);
+           this.repaint();
+    // =============================================================================
+    }
+}

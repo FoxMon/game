@@ -1,0 +1,34 @@
+package common;
+
+import java.util.List;
+import java.util.Vector;
+
+public class Room {
+
+	private int selectMusic = 0; // select music
+	
+	private boolean gameStart; // now game?
+	private boolean resultSetting; // all end?
+	private boolean twoUserRoom; // one or two?
+	
+	private String title; // title
+	private String pass; // password
+	
+	private List<Account> joiner; // user list
+	
+	private Room(Account owner, String title, boolean twouser, String pass) { // password room
+		this.title = title;
+        this.pass = pass;
+        
+		joiner = new Vector<>();
+        joiner.add(owner);
+        gameStart = false;
+        resultSetting = false;
+        twoUserRoom = twouser;
+	}
+	
+	public Room(Account owner, String title, boolean twouser) { // none password
+        this(owner, title, twouser, "");
+        gameStart = false;
+    }
+}

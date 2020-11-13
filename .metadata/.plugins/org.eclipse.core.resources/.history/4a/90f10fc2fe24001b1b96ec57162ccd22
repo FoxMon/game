@@ -1,0 +1,40 @@
+package handler;
+
+import java.awt.*;
+import java.awt.event.*;
+import client.*;
+
+
+public class BtCreateRoomFinishHandler implements ActionListener {
+    CreateRoomFrame target;
+    public BtCreateRoomFinishHandler(CreateRoomFrame c) {
+        target = c;
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        
+        String title = target.tfTitle.getText().trim();
+        String pw = "";
+            
+        // 1인용 방 만들기
+        if(target.rbOneUser.isSelected()) {
+            target.ui.net.sendCreateRoomRequest(title, pw, false);
+            target.setVisible(false);
+        } else {     // 2인용 방 만들기
+            // 2인용인데 비밀번호 방일 
+            if(target.tfPw.isEditable() ) {
+                if(String.valueOf(target.tfPw.getPassword()).equals("")) {
+                    JOptionPane.showMessageDialog(target, "비밀번호를 입력해주세요.");
+                    return;
+                } else {
+                    pw = String.valueOf(target.tfPw.getPassword()).trim();
+                }
+            }
+            target.ui.net.sendCreateRoomRequest(title, pw, true);
+            target.setVisible(false);
+        }
+    }
+    
+
+}
