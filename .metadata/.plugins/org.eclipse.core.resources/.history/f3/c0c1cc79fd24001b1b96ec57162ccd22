@@ -1,8 +1,0 @@
-package client;
-
-public class CreateRoom {
-
-	resp = accountPool.getCurrentUser();
-    sendToClient(resp);
-    break;    
-}

@@ -1,0 +1,87 @@
+package sign;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
+public class SignInForm extends JFrame {
+	
+	DataTransferObject dto = new DataTransferObject(); // object dto
+	
+	private JPanel contentPane;
+	
+	private JTextField tfMemberName; // name
+	
+	private JPasswordField jpMemberPassword; // password
+	
+	private JLabel laTitle;
+	private JLabel laName;
+	private JLabel laPassword;
+	
+	private JButton btLogin;
+	private JButton btCancel;
+	
+	public SignInForm() {
+		
+		setTitle("SignUp");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setSize(450, 500);
+		setResizable(false);
+		
+		setSize(300, 300);
+		setResizable(false);
+		
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		laTitle = new JLabel("Sign-In", JLabel.CENTER);
+		laName = new JLabel("ID", JLabel.RIGHT);
+		laPassword = new JLabel("Password", JLabel.RIGHT);
+		
+		btLogin = new JButton("Login");
+		btCancel = new JButton("Cancel");
+		
+		// title
+		laTitle.setBounds(159, 41, 101, 30);
+		contentPane.add(laTitle);
+		
+		setVisible(true);
+		
+		// login button.
+		btLogin.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				Object obj = e.getSource();
+				
+				if((JButton)obj == btLogin) { // set name, password.
+					dto.setName(tfMemberName.getText());
+					dto.setPassword(jpMemberPassword.getText());
+				}
+				
+				try {
+					switch(DataAccessObject.loginCheck(dto)) {
+					case 1:
+						JOptionPane.showMessageDialog(null, "Success!!!");
+						break;
+						
+					case 0:
+						JOptionPane.showMessageDialog(null, "Password Error...");
+						break;
+						
+					case -1:
+						JOptionPane.showMessageDialog(null, "None ID...");
+						break;
+					}
+				} catch(Exception ex) {
+					System.out.println("Login Failed... " + ex.getMessage());
+				}
+			}
+		});
+	}
+}

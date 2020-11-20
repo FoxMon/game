@@ -1,8 +1,0 @@
-package handler;
-
-import java.awt.*;
-import client.*;
-
-public class BtCreateRoomHandler implements ActionListener {
-
-}

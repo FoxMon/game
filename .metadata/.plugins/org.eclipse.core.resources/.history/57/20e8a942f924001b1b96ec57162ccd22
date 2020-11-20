@@ -1,9 +1,0 @@
-package handler;
-
-import java.awt.*;
-import java.awt.event.*;
-import client.*;
-
-public class BtSignUpCancelHandler implements ActionListener {
-
-}

@@ -1,9 +1,0 @@
-package handler;
-
-import java.awt.event.*;
-import client.*;
-
-public class BtLoginHandler implements ActionListener {
-
-	ClientUI
-}

@@ -1,7 +1,0 @@
-package clientPannel;
-
-import java.awt.*;
-
-public class LoginPanel {
-
-}

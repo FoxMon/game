@@ -37,6 +37,7 @@ public class DataAccessObject {
 		} catch(Exception e) {
 			createFlag = false;
 			System.out.println("Connection Error... " + e.getMessage());	
+			e.printStackTrace();
 		} finally {
 			// close statement and connection
 			try {
@@ -89,5 +90,34 @@ public class DataAccessObject {
 		}
 		
 		return -2; // DB error
+	}
+	
+	public static boolean nameCheck(String id) { // check name
+		
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		
+		String name = id;
+		String sql = "SELECT * FROM member WHERE name = '" + id + "'";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/account?serverTimezone=Asia/Seoul",
+					"root", "wnsgh1524");
+			st = (Statement)con.createStatement();
+			rs = st.executeQuery(sql);
+			
+			if (rs.next()) {
+				if (rs.getString(1).equals(id)) { // column
+					return false;
+				}
+			}
+		} catch(Exception e) {
+			System.out.println("Name check error... " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return true;
 	}
 }

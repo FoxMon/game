@@ -1,8 +1,0 @@
-package multi;
-
-import java.util.Map;
-
-public class UserAccountPool {
-
-	private Map<String, Account> accountMap
-}

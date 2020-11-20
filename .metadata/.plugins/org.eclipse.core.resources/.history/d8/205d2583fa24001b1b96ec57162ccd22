@@ -1,7 +1,0 @@
-package handler;
-
-import java.awt.Event.*;
-
-public class BtLoginHandler {
-
-}

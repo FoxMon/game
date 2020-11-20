@@ -1,8 +1,0 @@
-package common;
-
-public class Account {
-
-	private String nick; // id
-	private String pass; // password
-	private String name; // name
-}
