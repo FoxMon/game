@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
 import RhythmGame.DynamicBeat;
+import RhythmGame.KeyListener;
 import RhythmGame.Main;
 
 public class MainChat extends JFrame implements ActionListener, Runnable {
@@ -127,6 +128,8 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 		Main.dynamicBeat.leftButton.addActionListener(this);
 		Main.dynamicBeat.rightButton.addActionListener(this);
 		Main.dynamicBeat.easyButton.addActionListener(this);
+		Main.dynamicBeat.hardButton.addActionListener(this);
+		Main.dynamicBeat.addKeyListener(new KeyListener());
 	}
 
 	@Override
@@ -136,6 +139,7 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 		if (ob == btCreate) {// request create room
 			
 			String title = JOptionPane.showInputDialog(this, "RoomTitle:");
+			client.setIndex(0);
 
 			// send room title to server
 			sendMessage("160|" + title);
@@ -201,9 +205,16 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 				client.setSelectedMusicIndex(Main.dynamicBeat.getNowSelected());
 			}
 
-			// DynamicBeat의 event와 겹침 그래서 DynamicBeat의 easyButton event 주석처리 안하면 여기서는 메세지 안보내짐.
 			String msg = Integer.toString(client.getSelectedMusicIndex());
 			sendMessage("700|" + msg);
+		} else if(ob == Main.dynamicBeat.hardButton) { // hard
+			
+			if(client.getSelectedMusicIndex() == -1) {
+				client.setSelectedMusicIndex(Main.dynamicBeat.getNowSelected());
+			}
+
+			String msg = Integer.toString(client.getSelectedMusicIndex());
+			sendMessage("800|" + msg);
 		}
 	}
 
@@ -283,9 +294,22 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 					client.setTitle("CharRoom-[" + msgs[1] + "]");
 					break;
 
-				case "450":
+				case "450": // choice
 					Main.dynamicBeat.enterMain();
 					Main.dynamicBeat.setVisible(true);
+					
+					if(Integer.parseInt(msgs[1]) == client.getIndex()) {
+						Main.dynamicBeat.leftButton.setVisible(true);
+						Main.dynamicBeat.rightButton.setVisible(true);
+						Main.dynamicBeat.easyButton.setVisible(true);
+						Main.dynamicBeat.hardButton.setVisible(true);
+					} else {
+						Main.dynamicBeat.leftButton.setVisible(false);
+						Main.dynamicBeat.rightButton.setVisible(false);
+						Main.dynamicBeat.easyButton.setVisible(false);
+						Main.dynamicBeat.hardButton.setVisible(false);
+					}
+					
 					client.setVisible(false);
 					break;
 					
@@ -302,6 +326,11 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 				case "700": // easy button start
 					int index = Integer.parseInt(msgs[1]);
 					Main.dynamicBeat.gameStart(index, "Easy");
+					break;
+					
+				case "800": // hard button start
+					int idx = Integer.parseInt(msgs[1]);
+					Main.dynamicBeat.gameStart(idx, "Hard");
 					break;
 				}
 			}

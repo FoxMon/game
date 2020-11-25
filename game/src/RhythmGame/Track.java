@@ -46,6 +46,10 @@ public class Track {
 		this.titleName = titleName;
 	}
 	
+	public Track() {
+		
+	}
+	
 	public Track(String titleImage, String startImage, String gameImage, String startMusic, String gameMusic, String titleName) {
 		super();
 		this.titleImage = titleImage;

@@ -54,6 +54,7 @@ public class Note extends Thread {
 		y += Main.NOTE_SPEED;
 		if (y > 620) {
 			Main.judge="Miss";
+			Main.myEnergy = Main.myEnergy - 1;
 			System.out.println("Miss");
 			close();
 		} 

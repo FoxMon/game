@@ -13,8 +13,11 @@ public class Main {
 	public static long wheelTime = 0; // 휠 판정을 위해 휠 돌리는 시작시간을 저장하는 변수
 	
 	public static int combo = 0; // 콤보
+	public static int myEnergy = 10; // 체력
 	
 	public static String judge; // 판정 변수
+	public static String enemyJudge; // 상대 판정
+	
 	public static String printCombo = "Combo: " + combo; // "combo= x"를 저장하는 변수
 	
 	public static DynamicBeat dynamicBeat;

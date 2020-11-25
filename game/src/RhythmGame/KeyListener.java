@@ -1,5 +1,6 @@
 package RhythmGame;
 
+import java.awt.Component;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -10,6 +11,7 @@ public class KeyListener extends KeyAdapter {
 		if(DynamicBeat.game == null) {
 			return;
 		}
+		
 		if(e.getKeyCode() == KeyEvent.VK_A) {
 			DynamicBeat.game.pressA();
 		}

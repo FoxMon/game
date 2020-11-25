@@ -106,8 +106,9 @@ public class Game extends Thread {
 
 		// 판정 표시
 		g.drawImage(blueFlareImage, 100, 100, null);
-		if (Main.judge != null && Main.judge != "None")
+		if (Main.judge != null && Main.judge != "None") {
 			g.drawString(Main.judge, 450, 450);
+		}
 
 		// 콤보 표시
 		g.drawString(Main.printCombo, 600, 450);

@@ -184,12 +184,21 @@ public class Service extends Thread {
 
 	public void messageShowSelectMusic(String message) throws IOException { // easy button start
 
+		int hostIndex = 0;
+		
+		String host = null;
+		
 		for (int i = 0; i < myRoom.user.size(); i++) {
 
+			if(myRoom.getIsHost()) {
+				hostIndex = 0;
+				host = Integer.toString(hostIndex);
+			}
+			
 			Service service = myRoom.user.get(i);
-
+			
 			try {
-				service.messageTo(message);
+				service.messageTo(message + "|" + host);
 			} catch (IOException e) {
 				myRoom.user.remove(i--); // disconnect user remove
 				System.out.println("Music start error... " + e.getMessage());
@@ -207,6 +216,21 @@ public class Service extends Thread {
 			try {
 				service.messageTo(message);
 			} catch(IOException e) {
+				myRoom.user.remove(i--); // disconnect user remove
+				System.out.println("Music start error... " + e.getMessage());
+			}
+		}
+	}
+
+	public void messageHardStart(String message) throws IOException { // easy button start
+
+		for (int i = 0; i < myRoom.user.size(); i++) {
+
+			Service service = myRoom.user.get(i);
+
+			try {
+				service.messageTo(message);
+			} catch (IOException e) {
 				myRoom.user.remove(i--); // disconnect user remove
 				System.out.println("Music start error... " + e.getMessage());
 			}
@@ -249,6 +273,7 @@ public class Service extends Thread {
 		            	myRoom.setTitle(msgs[1]);
 		            	myRoom.setCount(1);
 		            	myRoom.setBoss(name);
+		            	myRoom.setIsHost(true);
 		            	
 		            	roomUser.add(myRoom);
 		            	waitUser.remove(this);
@@ -317,6 +342,11 @@ public class Service extends Thread {
 		            case "700": // easy button
 		            	myRoom.setSelectedMusicIndex(Integer.parseInt(msgs[1]));
 		            	messageEasyStart("700|" + msgs[1]);
+		            	break;
+		            	
+		            case "800": // hard button
+		            	myRoom.setSelectedMusicIndex(Integer.parseInt(msgs[1]));
+		            	messageHardStart("800|" + msgs[1]);
 		            	break;
 		            }
 				}

@@ -32,12 +32,12 @@ public class Client extends JFrame { // client UI
 	JPanel p;
 	
 	private int selectedMusicIndex;
-	private boolean isHost;
+	private int index;
 	
 	public Client() {
 		
 		selectedMusicIndex = -1;
-		isHost = false;
+		index = -1;
 		
 		setTitle("ChatRoom");
 		tfSend = new JTextField(15);
@@ -88,11 +88,11 @@ public class Client extends JFrame { // client UI
 		return selectedMusicIndex;
 	}
 	
-	public void setIsHost(boolean isHost) {
-		this.isHost = isHost;
+	public void setIndex(int index) {
+		this.index = index;
 	}
 	
-	public boolean getIsHost() {
-		return isHost;
+	public int getIndex() {
+		return this.index;
 	}
 }

@@ -14,8 +14,11 @@ public class Room {
 	private int count; // room people
 	private int selectedMusicIndex; // selected music index
 	
+	private boolean isHost;
+	
 	public Room() {
 		
+		isHost = false;
 		selectedMusicIndex = -1;
 		user = new Vector<>();
 	}
@@ -59,5 +62,13 @@ public class Room {
 	
 	public int getSelectedMusicIndex() {
 		return selectedMusicIndex;
+	}
+	
+	public void setIsHost(boolean isHost) {
+		this.isHost = isHost;
+	}
+	
+	public boolean getIsHost() {
+		return this.isHost;
 	}
 }
