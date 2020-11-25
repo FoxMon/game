@@ -181,6 +181,37 @@ public class Service extends Thread {
 			}
 		}
 	}
+
+	public void messageShowSelectMusic(String message) throws IOException { // easy button start
+
+		for (int i = 0; i < myRoom.user.size(); i++) {
+
+			Service service = myRoom.user.get(i);
+
+			try {
+				service.messageTo(message);
+			} catch (IOException e) {
+				myRoom.user.remove(i--); // disconnect user remove
+				System.out.println("Music start error... " + e.getMessage());
+			}
+		}
+	}
+	
+	
+	public void messageEasyStart(String message) throws IOException { // easy button start
+		
+		for(int i = 0; i < myRoom.user.size(); i++) {
+			
+			Service service = myRoom.user.get(i);
+			
+			try {
+				service.messageTo(message);
+			} catch(IOException e) {
+				myRoom.user.remove(i--); // disconnect user remove
+				System.out.println("Music start error... " + e.getMessage());
+			}
+		}
+	}
 	
 	@Override
 	public void run() {
@@ -269,6 +300,10 @@ public class Service extends Thread {
 		            	messageRoom("160|" + getRoomInfo());
 		            	break;
 		            	
+		            case "450": // choice
+		            	messageShowSelectMusic(msgs[0]);
+		            	break;
+		            	
 		            case "500": // music choice left
 						myRoom.setSelectedMusicIndex(Integer.parseInt(msgs[1]));
 						messageSelectedMusicIndex("500|" + Integer.toString(myRoom.getSelectedMusicIndex()));
@@ -277,6 +312,11 @@ public class Service extends Thread {
 		            case "600": // music choice right
 						myRoom.setSelectedMusicIndex(Integer.parseInt(msgs[1]));
 						messageSelectedMusicIndex("600|" + Integer.toString(myRoom.getSelectedMusicIndex()));
+		            	break;
+		            	
+		            case "700": // easy button
+		            	myRoom.setSelectedMusicIndex(Integer.parseInt(msgs[1]));
+		            	messageEasyStart("700|" + msgs[1]);
 		            	break;
 		            }
 				}

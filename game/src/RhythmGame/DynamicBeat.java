@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -60,7 +61,7 @@ public class DynamicBeat extends JFrame {
 	private JButton quitButton = new JButton(quitButtonBasicImage);
 	public JButton leftButton = new JButton(leftButtonBasicImage);
 	public JButton rightButton = new JButton(rightButtonBasicImage);
-	private JButton easyButton = new JButton(easyButtonBasicImage);
+	public JButton easyButton = new JButton(easyButtonBasicImage);
 	private JButton hardButton = new JButton(hardButtonBasicImage);
 	private JButton backButton = new JButton(backButtonBasicImage);
 
@@ -200,6 +201,7 @@ public class DynamicBeat extends JFrame {
 			}
 		});
 		add(quitButton);
+		
 		// 멀티 버튼
 		multiButton.setBounds(40, 330, 400, 100);
 		multiButton.setBorderPainted(false);
@@ -291,6 +293,7 @@ public class DynamicBeat extends JFrame {
 		easyButton.setContentAreaFilled(false);
 		easyButton.setFocusPainted(false);
 		easyButton.addMouseListener(new MouseAdapter() {
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				easyButton.setIcon(easyButtonEnteredImage);
@@ -304,7 +307,7 @@ public class DynamicBeat extends JFrame {
 				easyButton.setIcon(easyButtonBasicImage);
 				easyButton.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			}
-
+			
 			@Override
 			public void mousePressed(MouseEvent e) {
 				Music buttonEnteredMusic = new Music("buttonPressedMusic.mp3", false);
@@ -313,6 +316,7 @@ public class DynamicBeat extends JFrame {
 			}
 		});
 		add(easyButton);
+		
 
 		hardButton.setVisible(false);
 		hardButton.setBounds(655, 580, 250, 67);

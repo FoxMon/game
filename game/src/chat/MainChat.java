@@ -46,8 +46,7 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 		client = new Client(); // first, create client frame
 		
 		roomInfo = new JList<String>();
-		roomInfo.setBorder(new TitledBorder("방정보"));
-
+		roomInfo.setBorder(new TitledBorder("Romm Info"));
 		roomInfo.addMouseListener(new MouseAdapter() { // mouse event
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -122,10 +121,12 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 		client.tfSend.addActionListener(this);
 		client.btChange.addActionListener(this);
 		client.btExit.addActionListener(this);
+		client.btChoice.addActionListener(this);
 		
-		// dynamic beat left, right
+		// dynamic beat left, right, easy
 		Main.dynamicBeat.leftButton.addActionListener(this);
 		Main.dynamicBeat.rightButton.addActionListener(this);
+		Main.dynamicBeat.easyButton.addActionListener(this);
 	}
 
 	@Override
@@ -144,8 +145,8 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 			setVisible(false);
 			client.setVisible(true);
 			
-			Main.dynamicBeat.enterMain();
-			Main.dynamicBeat.setVisible(true);
+			// Main.dynamicBeat.enterMain();
+			// Main.dynamicBeat.setVisible(true);
 		} else if (ob == btEnter) { // request enter room
 			
 			if (selectedRoom == null) {
@@ -158,8 +159,8 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 			setVisible(false);
 			client.setVisible(true);
 			
-			Main.dynamicBeat.enterMain();
-			Main.dynamicBeat.setVisible(true);
+			// Main.dynamicBeat.enterMain();
+			// Main.dynamicBeat.setVisible(true);
 
 		} else if (ob == client.btExit) { // request exit room
 			
@@ -181,6 +182,9 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 		} else if (ob == btExit) { // exit -> end
 			
 			dispose();
+		} else if(ob == client.btChoice) { // choice music button
+			
+			sendMessage("450|");
 		} else if (ob == Main.dynamicBeat.leftButton) { // left
 			
 			client.setSelectedMusicIndex(Main.dynamicBeat.getNowSelected());
@@ -191,6 +195,15 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 			client.setSelectedMusicIndex(Main.dynamicBeat.getNowSelected());
 			String msg = Integer.toString(client.getSelectedMusicIndex());
 			sendMessage("600|" + msg);
+		} else if(ob == Main.dynamicBeat.easyButton) { // easy
+			
+			if(client.getSelectedMusicIndex() == -1) {
+				client.setSelectedMusicIndex(Main.dynamicBeat.getNowSelected());
+			}
+
+			// DynamicBeat의 event와 겹침 그래서 DynamicBeat의 easyButton event 주석처리 안하면 여기서는 메세지 안보내짐.
+			String msg = Integer.toString(client.getSelectedMusicIndex());
+			sendMessage("700|" + msg);
 		}
 	}
 
@@ -270,17 +283,25 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 					client.setTitle("CharRoom-[" + msgs[1] + "]");
 					break;
 
+				case "450":
+					Main.dynamicBeat.enterMain();
+					Main.dynamicBeat.setVisible(true);
+					client.setVisible(false);
+					break;
+					
 				case "500": // music choice left button
-					// event
 					client.setSelectedMusicIndex(Integer.parseInt(msgs[1]));
 					Main.dynamicBeat.selectTrack(client.getSelectedMusicIndex());
-					
 					break;
 					
 				case "600": // music choice right button
-					// event
 					client.setSelectedMusicIndex(Integer.parseInt(msgs[1]));
 					Main.dynamicBeat.selectTrack(client.getSelectedMusicIndex());
+					break;
+					
+				case "700": // easy button start
+					int index = Integer.parseInt(msgs[1]);
+					Main.dynamicBeat.gameStart(index, "Easy");
 					break;
 				}
 			}

@@ -15,6 +15,8 @@ public class Room {
 	private int selectedMusicIndex; // selected music index
 	
 	public Room() {
+		
+		selectedMusicIndex = -1;
 		user = new Vector<>();
 	}
 	

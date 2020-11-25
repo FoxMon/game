@@ -19,16 +19,25 @@ public class Client extends JFrame { // client UI
 	JLabel laMessage;
 	
 	JTextArea textArea;
-	JScrollPane spTextArea, spList;
+	
+	JScrollPane spTextArea;
+	JScrollPane spList;
 	
 	JList<String> liPerson;
-	JButton btChange, btExit;
+	
+	JButton btChange;
+	JButton btExit;
+	JButton btChoice;
 	
 	JPanel p;
-
+	
 	private int selectedMusicIndex;
+	private boolean isHost;
 	
 	public Client() {
+		
+		selectedMusicIndex = -1;
+		isHost = false;
 		
 		setTitle("ChatRoom");
 		tfSend = new JTextField(15);
@@ -43,14 +52,18 @@ public class Client extends JFrame { // client UI
 		
 		btChange = new JButton("ChangeTitle");
 		btExit = new JButton("Exit");
+		btChoice = new JButton("Choice");
 
 		p = new JPanel();
 		spTextArea.setBounds(10, 10, 380, 390);
 		laMessage.setBounds(10, 410, 60, 30);
 		tfSend.setBounds(70, 410, 320, 30);
-		spList.setBounds(400, 10, 120, 350);
+		// spList.setBounds(400, 10, 120, 350);
+		spList.setBounds(400, 10, 120, 310);
+		btChoice.setBounds(400, 330, 120, 30);
 		btChange.setBounds(400, 370, 120, 30);
 		btExit.setBounds(400, 410, 120, 30);
+		
 		p.setLayout(null);
 		p.setBackground(Color.PINK);
 		p.add(spTextArea);
@@ -59,9 +72,11 @@ public class Client extends JFrame { // client UI
 		p.add(spList);
 		p.add(btChange);
 		p.add(btExit);
+		p.add(btChoice);
+		
 		add(p);
-		setBounds(300, 200, 550, 500);
-		// setVisible(true);
+		setBounds(550, 200, 550, 500);	
+		setVisible(false);
 		tfSend.requestFocus();
 	}
 	
@@ -71,5 +86,13 @@ public class Client extends JFrame { // client UI
 	
 	public int getSelectedMusicIndex() {
 		return selectedMusicIndex;
+	}
+	
+	public void setIsHost(boolean isHost) {
+		this.isHost = isHost;
+	}
+	
+	public boolean getIsHost() {
+		return isHost;
 	}
 }

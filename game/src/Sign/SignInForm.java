@@ -28,7 +28,7 @@ public class SignInForm extends JFrame {
 
 	public SignInForm() {
 
-		setTitle("SignUp");
+		setTitle("SignIn");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		// 종료버튼 누를 시
 		this.addWindowListener(new WindowAdapter() {
