@@ -5,7 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,6 +15,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -26,28 +28,29 @@ import RhythmGame.DynamicBeat;
 import RhythmGame.KeyListener;
 import RhythmGame.Main;
 
-public class MainChat extends JFrame implements ActionListener, Runnable {
+public class MainChat extends JFrame implements ActionListener, Runnable, WindowListener {
 
 	JList<String> roomInfo, roomUser, waitInfo;
 	JScrollPane spRoomInfo, spRoomPerson, spWaitInfo;
 	JButton btCreate, btEnter, btExit;
 	JPanel p;
-	
-	private Client client;
+
+	public static Client client;
 
 	private BufferedReader in;
 	private OutputStream out;
-
 	private String selectedRoom;
+	private String id = Sign.SignInForm.dto.getName();
 
 	public MainChat() {
-		
+
+		addWindowListener(this);
 		setTitle("WaitingRoom");
 
 		client = new Client(); // first, create client frame
-		
+
 		roomInfo = new JList<String>();
-		roomInfo.setBorder(new TitledBorder("Romm Info"));
+		roomInfo.setBorder(new TitledBorder("Room Info"));
 		roomInfo.addMouseListener(new MouseAdapter() { // mouse event
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -66,11 +69,12 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 		roomUser = new JList<String>();
 		roomUser.setBorder(new TitledBorder("User Information"));
 
-		waitInfo = new JList<String>();
-		waitInfo.setBorder(new TitledBorder("Room Information"));
+		waitInfo = new JList<String>(new DefaultListModel());
+		waitInfo.setBorder(new TitledBorder("Waiting Users Information"));
 
 		spRoomInfo = new JScrollPane(roomInfo);
 		spRoomPerson = new JScrollPane(roomUser);
+
 		spWaitInfo = new JScrollPane(waitInfo);
 
 		btCreate = new JButton("Create");
@@ -88,7 +92,7 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 		btExit.setBounds(320, 410, 150, 30);
 
 		p.setLayout(null);
-		p.setBackground(Color.orange);
+		p.setBackground(Color.GRAY);
 		p.add(spRoomInfo);
 		p.add(spRoomPerson);
 		p.add(spWaitInfo);
@@ -98,21 +102,24 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 
 		add(p);
 		setBounds(300, 200, 500, 500);
-		setVisible(true);
+
+		setResizable(false);
+		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setVisible(true);
 		connect();// server Connect
 
 		new Thread(this).start();// waiting for server message
 
 		sendMessage("100|");// alarm
-		String id = Sign.SignInForm.dto.getName();
+
 		// id = JOptionPane.showInputDialog(this, "Title:");
 		sendMessage("150|" + id);
 		eventListener();
 	}
 
 	private void eventListener() { // event
-		
+
 		// waiting room
 		btCreate.addActionListener(this);
 		btEnter.addActionListener(this);
@@ -123,7 +130,7 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 		client.btChange.addActionListener(this);
 		client.btExit.addActionListener(this);
 		client.btChoice.addActionListener(this);
-		
+
 		// dynamic beat left, right, easy
 		Main.dynamicBeat.leftButton.addActionListener(this);
 		Main.dynamicBeat.rightButton.addActionListener(this);
@@ -137,37 +144,41 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 		Object ob = e.getSource();
 
 		if (ob == btCreate) {// request create room
-			
 			String title = JOptionPane.showInputDialog(this, "RoomTitle:");
+			Client.btChoice.setVisible(true);
 			client.setIndex(0);
-
 			// send room title to server
 			sendMessage("160|" + title);
 			client.setTitle("CharRoom-[" + title + "]");
 			sendMessage("175|");
-			
+
 			setVisible(false);
 			client.setVisible(true);
-			
 			// Main.dynamicBeat.enterMain();
 			// Main.dynamicBeat.setVisible(true);
 		} else if (ob == btEnter) { // request enter room
-			
+			Client.btChoice.setVisible(false);
 			if (selectedRoom == null) {
 				JOptionPane.showMessageDialog(this, "Choice room!");
+			} else {
+				sendMessage("200|" + selectedRoom);
+				sendMessage("175|");
+
+				setVisible(false);
+				client.setVisible(true);
 			}
-
-			sendMessage("200|" + selectedRoom);
-			sendMessage("175|");
-
-			setVisible(false);
-			client.setVisible(true);
-			
 			// Main.dynamicBeat.enterMain();
 			// Main.dynamicBeat.setVisible(true);
 
+		}  else if (ob == btExit) { // exit -> end
+			Main.dynamicBeat.setVisible(true);
+			Main.dynamicBeat.backRoomButton.setVisible(false);
+			Main.dynamicBeat.backIntroButton.setVisible(false);
+			//waitInfo.remove();
+			client.dispose();
+			dispose();
 		} else if (ob == client.btExit) { // request exit room
-			
+
 			sendMessage("400|");
 			client.setVisible(false);
 			setVisible(true);
@@ -175,41 +186,45 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 			// 멀티기능 비활성화
 			Main.dynamicBeat.setVisible(false);
 
+		} else if (ob == client.btChange) { // to change title
+			String title = JOptionPane.showInputDialog(this, "RoomTitle:");
+			sendMessage("400|" + title);
+			client.setTitle("CharRoom-[" + title + "]");
+			// 멀티기능 비활성화
+			Main.dynamicBeat.setVisible(false);
+
 		} else if (ob == client.tfSend) {// request send message
-			
+
 			String msg = client.tfSend.getText();
 
 			if (msg.length() > 0) {
 				sendMessage("300|" + msg);
 				client.tfSend.setText("");
 			}
-		} else if (ob == btExit) { // exit -> end
-			
-			dispose();
-		} else if(ob == client.btChoice) { // choice music button
+		}else if (ob == client.btChoice) { // choice music button
 			
 			sendMessage("450|");
 		} else if (ob == Main.dynamicBeat.leftButton) { // left
-			
+
 			client.setSelectedMusicIndex(Main.dynamicBeat.getNowSelected());
 			String msg = Integer.toString(client.getSelectedMusicIndex());
 			sendMessage("500|" + msg);
 		} else if (ob == Main.dynamicBeat.rightButton) { // right
-			
+
 			client.setSelectedMusicIndex(Main.dynamicBeat.getNowSelected());
 			String msg = Integer.toString(client.getSelectedMusicIndex());
 			sendMessage("600|" + msg);
-		} else if(ob == Main.dynamicBeat.easyButton) { // easy
-			
-			if(client.getSelectedMusicIndex() == -1) {
+		} else if (ob == Main.dynamicBeat.easyButton) { // easy
+
+			if (client.getSelectedMusicIndex() == -1) {
 				client.setSelectedMusicIndex(Main.dynamicBeat.getNowSelected());
 			}
 
 			String msg = Integer.toString(client.getSelectedMusicIndex());
 			sendMessage("700|" + msg);
-		} else if(ob == Main.dynamicBeat.hardButton) { // hard
-			
-			if(client.getSelectedMusicIndex() == -1) {
+		} else if (ob == Main.dynamicBeat.hardButton) { // hard
+
+			if (client.getSelectedMusicIndex() == -1) {
 				client.setSelectedMusicIndex(Main.dynamicBeat.getNowSelected());
 			}
 
@@ -219,7 +234,7 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 	}
 
 	public void connect() { // request server for connection
-		
+
 		try {
 			Socket socket = new Socket("localhost", 5678);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -232,7 +247,7 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 	}
 
 	public void sendMessage(String message) { // send to server
-		
+
 		try {
 			out.write((message + "\n").getBytes());
 		} catch (IOException e) {
@@ -242,17 +257,17 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 
 	@Override
 	public void run() {
-		
+
 		try {
-			
+
 			while (true) {
-				
+
 				String message = in.readLine();// message -> server message
 				String msgs[] = message.split("\\|");
 				String protocol = msgs[0];
 
 				switch (protocol) {
-				
+
 				case "300":
 					client.textArea.append(msgs[1] + "\n");
 					client.textArea.setCaretPosition(client.textArea.getText().length());
@@ -297,8 +312,9 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 				case "450": // choice
 					Main.dynamicBeat.enterMain();
 					Main.dynamicBeat.setVisible(true);
-					
-					if(Integer.parseInt(msgs[1]) == client.getIndex()) {
+					Main.dynamicBeat.backIntroButton.setVisible(false);
+					Main.dynamicBeat.backRoomButton.setVisible(true);
+					if (Integer.parseInt(msgs[1]) == client.getIndex()) {
 						Main.dynamicBeat.leftButton.setVisible(true);
 						Main.dynamicBeat.rightButton.setVisible(true);
 						Main.dynamicBeat.easyButton.setVisible(true);
@@ -309,25 +325,25 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 						Main.dynamicBeat.easyButton.setVisible(false);
 						Main.dynamicBeat.hardButton.setVisible(false);
 					}
-					
+
 					client.setVisible(false);
 					break;
-					
+
 				case "500": // music choice left button
 					client.setSelectedMusicIndex(Integer.parseInt(msgs[1]));
 					Main.dynamicBeat.selectTrack(client.getSelectedMusicIndex());
 					break;
-					
+
 				case "600": // music choice right button
 					client.setSelectedMusicIndex(Integer.parseInt(msgs[1]));
 					Main.dynamicBeat.selectTrack(client.getSelectedMusicIndex());
 					break;
-					
+
 				case "700": // easy button start
 					int index = Integer.parseInt(msgs[1]);
 					Main.dynamicBeat.gameStart(index, "Easy");
 					break;
-					
+
 				case "800": // hard button start
 					int idx = Integer.parseInt(msgs[1]);
 					Main.dynamicBeat.gameStart(idx, "Hard");
@@ -337,5 +353,48 @@ public class MainChat extends JFrame implements ActionListener, Runnable {
 		} catch (IOException e) {
 			System.out.println("Run error... " + e.getMessage());
 		}
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		// TODO Auto-generated method stub
+		Main.dynamicBeat.setVisible(true);
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 }

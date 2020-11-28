@@ -3,12 +3,14 @@ package RhythmGame;
 import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-public class Multiplay extends JFrame {
+public class Multiplay extends JFrame implements WindowListener{
 	private ImageIcon signInButtonEnteredImage = new ImageIcon(
 			Main.class.getResource("../images/startButtonEntered.png"));
 	private ImageIcon signInButtonBasicImage = new ImageIcon(Main.class.getResource("../images/startButtonBasic.png"));
@@ -18,6 +20,7 @@ public class Multiplay extends JFrame {
 	private JButton signUpButton = new JButton(signUpButtonBasicImage);
 	
 	public Multiplay() {
+		addWindowListener(this);
 		setTitle("Multiplay");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(500, 800);
@@ -78,5 +81,47 @@ public class Multiplay extends JFrame {
 			}
 		});
 		add(signUpButton);
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		Main.dynamicBeat.setVisible(true);
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

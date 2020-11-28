@@ -39,15 +39,17 @@ public class SignUpForm extends JFrame {
 
 		setTitle("SignUp");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setSize(450, 500);
+		setResizable(false);
+		setLocationRelativeTo(null);
+		setVisible(true);
+	
 		// 종료버튼 누를 시
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				new Multiplay();
 			}
 		});
-		setLocationRelativeTo(null);
-		setSize(450, 500);
-		setResizable(false);
 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -113,8 +115,6 @@ public class SignUpForm extends JFrame {
 		// cancel
 		btCancel.setBounds(230, 363, 80, 35);
 		contentPane.add(btCancel);
-
-		setVisible(true);
 
 		// name check button event
 		btCheck.addActionListener(new ActionListener() {

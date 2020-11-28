@@ -1,6 +1,9 @@
 package chat;
 
 import java.awt.Color;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,7 +16,7 @@ import javax.swing.JTextField;
 import RhythmGame.DynamicBeat;
 import RhythmGame.Main;
 
-public class Client extends JFrame { // client UI
+public class Client extends JFrame implements WindowListener{ // client UI
 
 	JTextField tfSend;
 	JLabel laMessage;
@@ -27,7 +30,7 @@ public class Client extends JFrame { // client UI
 	
 	JButton btChange;
 	JButton btExit;
-	JButton btChoice;
+	static JButton btChoice;
 	
 	JPanel p;
 	
@@ -36,6 +39,7 @@ public class Client extends JFrame { // client UI
 	
 	public Client() {
 		
+		addWindowListener(this);
 		selectedMusicIndex = -1;
 		index = -1;
 		
@@ -65,7 +69,7 @@ public class Client extends JFrame { // client UI
 		btExit.setBounds(400, 410, 120, 30);
 		
 		p.setLayout(null);
-		p.setBackground(Color.PINK);
+		p.setBackground(Color.BLACK);
 		p.add(spTextArea);
 		p.add(laMessage);
 		p.add(tfSend);
@@ -74,6 +78,10 @@ public class Client extends JFrame { // client UI
 		p.add(btExit);
 		p.add(btChoice);
 		
+		
+		setResizable(false);
+		setLocationRelativeTo(null);
+		btChoice.setVisible(false);
 		add(p);
 		setBounds(550, 200, 550, 500);	
 		setVisible(false);
@@ -94,5 +102,48 @@ public class Client extends JFrame { // client UI
 	
 	public int getIndex() {
 		return this.index;
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		// TODO Auto-generated method stub
+		dispose();
+		new MainChat();
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

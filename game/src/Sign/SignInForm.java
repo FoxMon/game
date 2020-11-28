@@ -30,15 +30,16 @@ public class SignInForm extends JFrame {
 
 		setTitle("SignIn");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setSize(400, 400);
+		setResizable(false);
+		setLocationRelativeTo(null);
+		setVisible(true);
 		// 종료버튼 누를 시
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				new Multiplay();
 			}
 		});
-		setLocationRelativeTo(null);
-		setSize(400, 400);
-		setResizable(false);
 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -49,7 +50,7 @@ public class SignInForm extends JFrame {
 		laName = new JLabel("ID", JLabel.RIGHT);
 		laPassword = new JLabel("Password", JLabel.RIGHT);
 
-		laTitle.setFont(new Font("�븿珥덈＼�룍��", Font.BOLD, 20));
+		laTitle.setFont(new Font("함초롱바탕", Font.BOLD, 20));
 
 		btLogin = new JButton("Login");
 		btCancel = new JButton("Cancel");
@@ -84,8 +85,6 @@ public class SignInForm extends JFrame {
 		btCancel.setBounds(215, 240, 80, 35);
 		contentPane.add(btCancel);
 
-		setVisible(true);
-
 		// login button event.
 		btLogin.addActionListener(new ActionListener() {
 
@@ -103,9 +102,11 @@ public class SignInForm extends JFrame {
 					switch (DataAccessObject.loginCheck(dto)) {
 					case 1:
 						JOptionPane.showMessageDialog(null, "Success!!!");
+						Main.isLogin = true;
 						new chat.MainChat();
 						dispose();
 						Main.dynamicBeat.setVisible(false); // 시작화면 제거
+						Main.isLogin = true;
 						break;
 
 					case 0:
