@@ -1,26 +1,12 @@
-# game
-리듬게임!
+ver 1.0
 
-JunHo - Rhythm Game - Network - Login / Create Account.
-( Ver02 )
+추가:
+마우스 조작,
+콤보, 
+판정, 
+점수
 
------------------------------------------------------------------------
-
-JunHo - Rhythm Game - Network - CreateRoom / EnterRoom Logic
-(Ver03)
-
------------------------------------------------------------------------
-
-JunHo - Rhythm Game - Network - CreateRoom / EnterRoom Implements
-         - Socket / Room Create, Enter, Exit, Waiting room, UserInfo etc....
-(Ver04)
-
------------------------------------------------------------------------
-
-JunHo - Rhythm Game - SignUp and SignIn...
-(Ver05)
-
------------------------------------------------------------------------
-
-JunHo - Rhythm Game - Multi-MusicChoice.
-(Ver06)
+버그:
+콤보와 판정이 사라지지 않는 문제,
+눌렀을때 색이 바뀌지 않는 문제,
+백버튼시 인터럽트
